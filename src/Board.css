@@ -1,0 +1,41 @@
+/* src/Board.css */
+.container {
+  max-width: 300px;
+  margin: 2rem;
+}
+
+.row {
+  display: flex;
+  margin: 1px;
+}
+
+.row:nth-child(3),
+.row:nth-child(6) {
+  display: flex;
+  margin: 1px;
+  border-bottom: 3px solid black;
+}
+
+.col {
+  flex: 1;
+  margin: 1px;
+}
+
+.col:nth-child(3),
+.col:nth-child(6) {
+  flex: 1;
+  margin: 1px;
+  border-right: 3px solid black;
+}
+
+.form-control {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  height: 50px;
+  width: 50px;
+}
+
+.readonly {
+  background: #c9ccef;
+}
