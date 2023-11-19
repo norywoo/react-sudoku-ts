@@ -25,7 +25,7 @@ const initialBoard2: number[][] = [
   [6, 7, 2, 1, 9, 5, 3, 4, 8],
   [1, 9, 8, 3, 4, 2, 5, 6, 7],
   [8, 5, 9, 7, 6, 1, 4, 2, 3],
-  [4, 2, 6, 8, 0, 3, 7, 9, 1],
+  [4, 2, 6, 8, 0, 3, 0, 9, 1],
   [7, 1, 3, 9, 2, 4, 8, 5, 6],
   [9, 6, 1, 5, 3, 7, 2, 8, 4],
   [2, 8, 7, 4, 1, 9, 2, 8, 5],
@@ -45,12 +45,12 @@ interface CheckResult {
 
 function checkPlot(board: number[][], row: number, col: number, value: string): CheckResult {
   const noConflict = { invalid: false, reason: '', info: { row:-1, col:-1 } };
-  // check if value is empty this is DELETE operation, not a conflict
-  if (value === '') {
+  const val = parseInt(value) || 0;
+
+  if (val === 0) {
     return noConflict;
   }
-  
-  const val = parseInt(value) || 0;
+
   // check row
   for (let i = 0; i < 9; i++) {
     if (board[row][i] === val && i !== col) {
@@ -98,6 +98,14 @@ function checkGameCompleted(board: number[][]) {
   if (completed) {
     return true;
   }
+}
+
+const Congrats: React.FC<{show: boolean}> = ({show}) => {
+  return show ? (
+    <div className={show ? 'congrats' : 'congrats hidden'}>
+      <h1 style={{color: 'darkred'}}>Congratulations!</h1>
+    </div>
+  ) : null;
 }
 
 const Board: React.FC<BoardProps> = () => {
@@ -156,6 +164,7 @@ const Board: React.FC<BoardProps> = () => {
           </Form>
         </Col>
       </Row>
+      <Congrats show={completed} />
     </Container>
   );
 };
