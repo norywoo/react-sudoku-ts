@@ -47,3 +47,14 @@
 .conflict {
   background: #f00;
 }
+
+Button {
+  margin: 1rem;
+  padding: 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  background: #c9ccef;
+  border: 1px solid #000;
+  cursor: pointer;
+}

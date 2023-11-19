@@ -1,8 +1,10 @@
 // src/Board.tsx
-import React, { useState, ChangeEvent } from 'react';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './Board.css';
 import Timer from './Timer';
+import axios from 'axios';
+
 
 
 interface BoardProps {}
@@ -109,8 +111,27 @@ const Congrats: React.FC<{show: boolean}> = ({show}) => {
 }
 
 const Board: React.FC<BoardProps> = () => {
+
   const [board, setBoard] = useState<number[][]>(initialBoard);
   const [completed, setCompleted] = useState<boolean>(false);
+
+  const setNewProbFromServer = async () => {
+    const probServUrl = process.env.REACT_APP_PROB_SERV_URL;
+    if (!probServUrl) {
+      console.log('REACT_APP_PROB_SERV_URL not set');
+      return;
+    }
+    try {
+      const response = await axios.get(probServUrl);
+      const prob = JSON.parse(response.data.prob);
+      setBoard(prob);
+      return prob;
+    } catch (error) {
+      console.log(error);
+    };
+  }
+
+
   const handleCellChange = (row: number, col: number, value: string) => {
     const check = checkPlot(board, row, col, value);
     if (check.invalid) {
@@ -164,6 +185,8 @@ const Board: React.FC<BoardProps> = () => {
           </Form>
         </Col>
       </Row>
+      <Button variant="primary" onClick={() => setNewProbFromServer()}>
+        Get Problem from Lambda</Button>
       <Congrats show={completed} />
     </Container>
   );
