@@ -19,6 +19,7 @@ const initialBoard1: number[][] = [
   [0, 0, 0, 0, 8, 0, 0, 7, 9],
 ];
 
+// for debugging final plot
 const initialBoard2: number[][] = [
   [5, 3, 4, 6, 7, 8, 9, 1, 2],
   [6, 7, 2, 1, 9, 5, 3, 4, 8],
@@ -43,6 +44,12 @@ interface CheckResult {
 }
 
 function checkPlot(board: number[][], row: number, col: number, value: string): CheckResult {
+  const noConflict = { invalid: false, reason: '', info: { row:-1, col:-1 } };
+  // check if value is empty this is DELETE operation, not a conflict
+  if (value === '') {
+    return noConflict;
+  }
+  
   const val = parseInt(value) || 0;
   // check row
   for (let i = 0; i < 9; i++) {
@@ -69,7 +76,7 @@ function checkPlot(board: number[][], row: number, col: number, value: string): 
     }
   }
 
-  return { invalid: false, reason: '', info: { row:-1, col:-1 } };
+  return noConflict;
 }
 
 function showConflict(check: CheckResult) {
