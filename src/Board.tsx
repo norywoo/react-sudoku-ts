@@ -1,5 +1,5 @@
 // src/Board.tsx
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, KeyboardEvent } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import './Board.css';
 import Timer from './Timer';
@@ -111,6 +111,7 @@ const Congrats: React.FC<{show: boolean}> = ({show}) => {
 const Board: React.FC<BoardProps> = () => {
   const [board, setBoard] = useState<number[][]>(initialBoard);
   const [completed, setCompleted] = useState<boolean>(false);
+  const [focusedCell, setFocusedCell] = useState<{ row: number; col: number } | null>(null);
   const handleCellChange = (row: number, col: number, value: string) => {
     const check = checkPlot(board, row, col, value);
     if (check.invalid) {
@@ -126,9 +127,37 @@ const Board: React.FC<BoardProps> = () => {
     }
   };
 
-  // DEBUG: TODO remove
   const handleCellClick = (row: number, col: number) => {
-    console.log(row, col);
+    setFocusedCell({ row, col });
+  };
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    console.log(event.key);
+    console.log(focusedCell);
+
+    if (!focusedCell) return;
+
+    let newRow = focusedCell.row;
+    let newCol = focusedCell.col;
+
+    switch (event.key) {
+      case 'ArrowUp':
+        newRow = Math.max(0, newRow - 1);
+        break;
+      case 'ArrowDown':
+        newRow = Math.min(8, newRow + 1);
+        break;
+      case 'ArrowLeft':
+        newCol = Math.max(0, newCol - 1);
+        break;
+      case 'ArrowRight':
+        newCol = Math.min(8, newCol + 1);
+        break;
+      default:
+        return;
+    }
+    console.log(newRow, newCol);
+    setFocusedCell({ row: newRow, col: newCol });
   };
 
   return (
@@ -156,6 +185,7 @@ const Board: React.FC<BoardProps> = () => {
                         : cell === 0 ? 'empty' : 'editable'
                       }
                       onClick={() => handleCellClick(rowIndex, colIndex)}
+                      onKeyDown={handleKeyDown}
                     />
                   </Col>
                 ))}
@@ -168,5 +198,8 @@ const Board: React.FC<BoardProps> = () => {
     </Container>
   );
 };
+
+
+
 
 export default Board;
