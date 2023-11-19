@@ -2,10 +2,12 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
 import './Board.css';
+import Timer from './Timer';
+
 
 interface BoardProps {}
 
-const initialBoard: number[][] = [
+const initialBoard1: number[][] = [
   [5, 3, 0, 0, 7, 0, 0, 0, 0],
   [6, 0, 0, 1, 9, 5, 0, 0, 0],
   [0, 9, 8, 0, 0, 0, 0, 6, 0],
@@ -16,6 +18,22 @@ const initialBoard: number[][] = [
   [0, 0, 0, 4, 1, 9, 0, 0, 5],
   [0, 0, 0, 0, 8, 0, 0, 7, 9],
 ];
+
+const initialBoard2: number[][] = [
+  [5, 3, 4, 6, 7, 8, 9, 1, 2],
+  [6, 7, 2, 1, 9, 5, 3, 4, 8],
+  [1, 9, 8, 3, 4, 2, 5, 6, 7],
+  [8, 5, 9, 7, 6, 1, 4, 2, 3],
+  [4, 2, 6, 8, 0, 3, 7, 9, 1],
+  [7, 1, 3, 9, 2, 4, 8, 5, 6],
+  [9, 6, 1, 5, 3, 7, 2, 8, 4],
+  [2, 8, 7, 4, 1, 9, 2, 8, 5],
+  [3, 4, 5, 2, 8, 6, 1, 7, 9],
+];
+
+const debug = true;
+const initialBoard = debug ? initialBoard2 : initialBoard1;
+
 const origBoard: number[][] = JSON.parse(JSON.stringify(initialBoard)); // deep copy
 
 interface CheckResult {
@@ -62,8 +80,22 @@ function showConflict(check: CheckResult) {
   }, 2000);
 }
 
+function checkGameCompleted(board: number[][]) {
+  let completed = true;
+  for (let i = 0; i < 9; i++) {
+    if (board[i].includes(0)) {
+      completed = false;
+      break;
+    }
+  }
+  if (completed) {
+    return true;
+  }
+}
+
 const Board: React.FC<BoardProps> = () => {
   const [board, setBoard] = useState<number[][]>(initialBoard);
+  const [completed, setCompleted] = useState<boolean>(false);
   const handleCellChange = (row: number, col: number, value: string) => {
     const check = checkPlot(board, row, col, value);
     if (check.invalid) {
@@ -73,6 +105,10 @@ const Board: React.FC<BoardProps> = () => {
     const newBoard = [...board];
     newBoard[row][col] = parseInt(value) || 0;
     setBoard(newBoard);
+    if (checkGameCompleted(newBoard)) {
+      setCompleted(true);
+      console.log('Hohoho! Game completed!');
+    }
   };
 
   // DEBUG: TODO remove
@@ -82,6 +118,7 @@ const Board: React.FC<BoardProps> = () => {
 
   return (
     <Container>
+      <Timer stop={completed} />
       <Row>
         <Col>
           <Form>
