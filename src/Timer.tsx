@@ -4,12 +4,10 @@ interface TimerProps {
   stop: boolean;
 }
 
-const Timer = (args: TimerProps) => {
+const Timer = (props: TimerProps) => {
   const [seconds, setSeconds] = useState(0);
-
   useEffect(() => {
-    console.log(args.stop);
-    if (args.stop) {
+    if (props.stop) {
       return;
     }
     const interval = setInterval(() => {
@@ -17,7 +15,7 @@ const Timer = (args: TimerProps) => {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [args.stop]);
+  }, [props.stop]);
 
   const mmss = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);

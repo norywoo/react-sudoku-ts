@@ -31,7 +31,7 @@ const initialBoard2: number[][] = [
   [3, 4, 5, 2, 8, 6, 1, 7, 9],
 ];
 
-const debug = true;
+const debug = false; //true;
 const initialBoard = debug ? initialBoard2 : initialBoard1;
 
 const origBoard: number[][] = JSON.parse(JSON.stringify(initialBoard)); // deep copy
