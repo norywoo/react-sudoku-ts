@@ -39,3 +39,7 @@
 .readonly {
   background: #c9ccef;
 }
+
+.editable {
+  background: #cec;
+}

@@ -17,16 +17,19 @@ const initialBoard: number[][] = [
   [0, 0, 0, 4, 1, 9, 0, 0, 5],
   [0, 0, 0, 0, 8, 0, 0, 7, 9],
 ];
+const origBoard: number[][] = JSON.parse(JSON.stringify(initialBoard)); // deep copy
 
 const Board: React.FC<BoardProps> = () => {
   const [board, setBoard] = useState<number[][]>(initialBoard);
-  const [cnt, setCnt] = useState<number>(0);
-
   const handleCellChange = (row: number, col: number, value: string) => {
     const newBoard = [...board];
     newBoard[row][col] = parseInt(value) || 0;
     setBoard(newBoard);
-    setCnt(cnt + 1);
+  };
+
+  // DEBUG: TODO remove
+  const handleCellClick = (row: number, col: number) => {
+    console.log(row, col);
   };
 
   return (
@@ -45,8 +48,13 @@ const Board: React.FC<BoardProps> = () => {
                       onChange={(e: ChangeEvent<HTMLInputElement>) =>
                         handleCellChange(rowIndex, colIndex, e.target.value)
                       }
-                      readOnly={cell !== 0} // 数が入っているセルは読み取り専用にする
-                      className={(cell !==0) ? 'readonly' : 'editable'}
+                      readOnly={origBoard[rowIndex][colIndex] !== 0}
+                      className={
+                        origBoard[rowIndex][colIndex] !== 0
+                        ? 'readonly'
+                        : cell === 0 ? 'empty' : 'editable'
+                      }
+                      onClick={() => handleCellClick(rowIndex, colIndex)}
                     />
                   </Col>
                 ))}
