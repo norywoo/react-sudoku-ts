@@ -18,21 +18,25 @@ const initialBoard: number[][] = [
 ];
 const origBoard: number[][] = JSON.parse(JSON.stringify(initialBoard)); // deep copy
 
-function isValidPlot(board: number[][], row: number, col: number, value: string) {
+interface CheckResult {
+  invalid: boolean;
+  reason: string;
+  info: { row: number, col: number };
+}
+
+function checkPlot(board: number[][], row: number, col: number, value: string): CheckResult {
   const val = parseInt(value) || 0;
   // check row
   for (let i = 0; i < 9; i++) {
     if (board[row][i] === val && i !== col) {
-      console.log('invalid row');
-      return false;
+      return { invalid: true, reason: 'row', info: { row:row, col:i } };
     }
   }
 
   // check col
   for (let i = 0; i < 9; i++) {
     if (board[i][col] === val && i !== row) {
-      console.log('invalid col');
-      return false;
+      return { invalid: true, reason: 'col', info: { row:i, col:col } };
     }
   }
 
@@ -42,21 +46,28 @@ function isValidPlot(board: number[][], row: number, col: number, value: string)
   for (let i = subgridRow; i < subgridRow + 3; i++) {
     for (let j = subgridCol; j < subgridCol + 3; j++) {
       if (board[i][j] === val && i !== row && j !== col) {
-        console.log('invalid 3x3');
-        return false;
+        return { invalid: true, reason: '3x3', info: { row:i, col:j } };
       }
     }
   }
 
-  return true;
+  return { invalid: false, reason: '', info: { row:-1, col:-1 } };
 }
 
+function showConflict(check: CheckResult) {
+  const cell = document.getElementById(`cell-${check.info.row}-${check.info.col}`) as HTMLInputElement;
+  cell.classList.add('conflict');
+  setTimeout(() => {
+    cell.classList.remove('conflict');
+  }, 2000);
+}
 
 const Board: React.FC<BoardProps> = () => {
   const [board, setBoard] = useState<number[][]>(initialBoard);
   const handleCellChange = (row: number, col: number, value: string) => {
-    if (!isValidPlot(board, row, col, value)) {
-      alert('Invalid plot');
+    const check = checkPlot(board, row, col, value);
+    if (check.invalid) {
+      showConflict(check);
       return;
     }
     const newBoard = [...board];
@@ -79,6 +90,7 @@ const Board: React.FC<BoardProps> = () => {
                 {row.map((cell, colIndex) => (
                   <Col key={colIndex}>
                     <Form.Control
+                      id = {`cell-${rowIndex}-${colIndex}`}
                       type="text"
                       maxLength={1}
                       value={cell === 0 ? '' : cell.toString()}
