@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 interface TimerProps {
   stop: boolean;
+  reset: boolean;
+  setReset: (reset: boolean) => void;
 }
 
 const Timer = (props: TimerProps) => {
@@ -16,6 +18,13 @@ const Timer = (props: TimerProps) => {
 
     return () => clearInterval(interval);
   }, [props.stop]);
+
+  useEffect(() => {
+    if (props.reset) {
+      setSeconds(0);
+      props.setReset(false);
+    }
+  }, [props]);
 
   const mmss = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
