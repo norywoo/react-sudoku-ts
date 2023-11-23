@@ -1,11 +1,9 @@
 // src/Board.tsx
-import React, { useState, ChangeEvent, useEffect } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
+import React, { ChangeEvent, useState } from 'react';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import './Board.css';
 import Timer from './Timer';
-import axios from 'axios';
-
-
 
 interface BoardProps {}
 
@@ -36,8 +34,7 @@ const initialBoard2: number[][] = [
 
 const debug = false; //true;
 const initialBoard = debug ? initialBoard2 : initialBoard1;
-
-const origBoard: number[][] = JSON.parse(JSON.stringify(initialBoard)); // deep copy
+let origBoard = JSON.parse(JSON.stringify(initialBoard)); // deep copy
 
 interface CheckResult {
   invalid: boolean;
@@ -124,6 +121,8 @@ const Board: React.FC<BoardProps> = () => {
     try {
       const response = await axios.get(probServUrl);
       const prob = JSON.parse(response.data.prob);
+      origBoard = JSON.parse(JSON.stringify(prob));
+      console.log(response.data.probId);
       setBoard(prob);
       return prob;
     } catch (error) {
