@@ -1,9 +1,9 @@
 // src/Board.tsx
-import React, { useState, ChangeEvent, useEffect } from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
+import React, { ChangeEvent, useState } from 'react';
+import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import './Board.css';
 import Timer from './Timer';
-import axios from 'axios';
 
 
 
