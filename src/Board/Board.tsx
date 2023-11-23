@@ -111,6 +111,12 @@ const Board: React.FC<BoardProps> = () => {
 
   const [board, setBoard] = useState<number[][]>(initialBoard);
   const [completed, setCompleted] = useState<boolean>(false);
+  const [reset, setReset] = useState<boolean>(false);
+
+  const resetTimer = () => {
+    setCompleted(false);
+    setReset(true);
+  };
 
   const setNewProbFromServer = async () => {
     const probServUrl = process.env.REACT_APP_PROB_SERV_URL;
@@ -123,6 +129,7 @@ const Board: React.FC<BoardProps> = () => {
       const prob = JSON.parse(response.data.prob);
       origBoard = JSON.parse(JSON.stringify(prob));
       console.log(response.data.probId);
+      resetTimer();
       setBoard(prob);
       return prob;
     } catch (error) {
@@ -153,7 +160,7 @@ const Board: React.FC<BoardProps> = () => {
 
   return (
     <Container>
-      <Timer stop={completed} />
+      <Timer stop={completed} reset={reset} setReset={setReset}/>
       <Row>
         <Col>
           <Form>
