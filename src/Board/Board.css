@@ -1,5 +1,6 @@
 /* src/Board.css */
 .container {
+  max-width: 300px;
   margin: 2rem;
 }
 
