@@ -42,6 +42,14 @@ interface CheckResult {
   info: { row: number, col: number };
 }
 
+interface Plot {
+  row: number;
+  col: number;
+  val: number;
+}
+
+const history: Plot[] = [];
+
 function checkPlot(board: number[][], row: number, col: number, value: string): CheckResult {
   const noConflict = { invalid: false, reason: '', info: { row:-1, col:-1 } };
   const val = parseInt(value) || 0;
@@ -113,6 +121,15 @@ const Board: React.FC<BoardProps> = () => {
   const [completed, setCompleted] = useState<boolean>(false);
   const [reset, setReset] = useState<boolean>(false);
 
+  const historyBack = () => {
+    const lastPlot = history.pop();
+    if (!lastPlot) {
+      console.log('No history');
+      return;
+    }
+    handleCellChange(lastPlot.row, lastPlot.col, 'X');  // intentionally 'X' to indicate history POP
+  };
+
   const resetTimer = () => {
     setCompleted(false);
     setReset(true);
@@ -137,7 +154,6 @@ const Board: React.FC<BoardProps> = () => {
     };
   }
 
-
   const handleCellChange = (row: number, col: number, value: string) => {
     const check = checkPlot(board, row, col, value);
     if (check.invalid) {
@@ -145,8 +161,15 @@ const Board: React.FC<BoardProps> = () => {
       return;
     }
     const newBoard = [...board];
-    newBoard[row][col] = parseInt(value) || 0;
+    const val = parseInt(value) || 0;
+    newBoard[row][col] = val;
     setBoard(newBoard);
+    if (val !== 0) {
+      history.push({row: row, col: col, val: val});
+    } else if (value !== 'X') {
+      history.pop();
+    }
+    console.log(history);
     if (checkGameCompleted(newBoard)) {
       setCompleted(true);
       console.log('Hohoho! Game completed!');
@@ -191,8 +214,12 @@ const Board: React.FC<BoardProps> = () => {
           </Form>
         </Col>
       </Row>
+      <Button variant="primary" onClick={() => historyBack()}>
+        Back
+      </Button>
       <Button variant="primary" onClick={() => setNewProbFromServer()}>
-        Get Problem from Lambda</Button>
+        Get new problem
+      </Button>
       <Congrats show={completed} />
     </Container>
   );
