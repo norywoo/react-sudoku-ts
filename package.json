@@ -18,7 +18,6 @@
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
@@ -47,6 +46,7 @@
     ]
   },
   "devDependencies": {
-    "@types/cors": "^2.8.16"
+    "@types/cors": "^2.8.16",
+    "react-scripts": "^5.0.1"
   }
 }
